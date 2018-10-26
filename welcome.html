@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Welcome Page</title>
+<link href="css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="css/fontawesome-all.css">
+<link href="css/main.css" rel="stylesheet" type="text/css" />
+
+<style type="text/css">
+
+#marqueecontainer{
+position: relative;
+width: 200px; /*marquee width */
+height: 200px; /*marquee height */
+background-color: white;
+overflow: hidden;
+border: 3px solid orange;
+}
+
+</style>
+<script type="text/javascript">
+
+/***********************************************
+* Cross browser Marquee II- (c) Dynamic Drive (www.dynamicdrive.com)
+* Please keep this notice intact
+* Visit http://www.dynamicdrive.com/ for this script and 100s more.
+***********************************************/
+
+var delayb4scroll=2000 //Specify initial delay before marquee starts to scroll on page (2000=2 seconds)
+var marqueespeed=2 //Specify marquee scroll speed (larger is faster 1-10)
+var pauseit=1 //Pause marquee onMousever (0=no. 1=yes)?
+
+////NO NEED TO EDIT BELOW THIS LINE////////////
+
+var copyspeed=marqueespeed
+var pausespeed=(pauseit==0)? copyspeed: 0
+var actualheight=''
+
+function scrollmarquee(){
+if (parseInt(cross_marquee.style.top)>(actualheight*(-1)+8))
+cross_marquee.style.top=parseInt(cross_marquee.style.top)-copyspeed+"px"
+else
+cross_marquee.style.top=parseInt(marqueeheight)+8+"px"
+}
+
+function initializemarquee(){
+cross_marquee=document.getElementById("vmarquee")
+cross_marquee.style.top=0
+marqueeheight=document.getElementById("marqueecontainer").offsetHeight
+actualheight=cross_marquee.offsetHeight
+if (window.opera || navigator.userAgent.indexOf("Netscape/7")!=-1){ //if Opera or Netscape 7x, add scrollbars to scroll and exit
+cross_marquee.style.height=marqueeheight+"px"
+cross_marquee.style.overflow="scroll"
+return
+}
+setTimeout('lefttime=setInterval("scrollmarquee()",30)', delayb4scroll)
+}
+
+if (window.addEventListener)
+window.addEventListener("load", initializemarquee, false)
+else if (window.attachEvent)
+window.attachEvent("onload", initializemarquee)
+else if (document.getElementById)
+window.onload=initializemarquee
+
+</script>
+</head>
+<body>
+<nav class="navbar navbar-expand-md navbar-light bg-light fixed-top">
+	<div class="container">
+		<a class="navbar-brand" href="index.html#">
+			<img src="img/logo.png" alt="HTML5 Icon" style="width:100px;height:60px;">
+		</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault"
+		 aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+
+		<div class="collapse navbar-collapse" id="navbarsExampleDefault">
+			<ul class="navbar-nav mr-auto">
+
+			</ul>
+			<form class="form-inline my-2 my-lg-0 mr-3" action="/home" method="post">
+				<button class="btn" type="submit" value="Home">
+					<i class="fa fa-home"></i> Home</button>
+				<input type="hidden" id="user" name="hidden" th:value="${user}" />
+			</form>
+			<form class="form-inline my-2 my-lg-0" action="/logout" method="post">
+				<button class="btn" type="submit" value="Logout">
+					<i class="fa fa-arrow-right"></i> Logout</button>
+				<input type="hidden" name="hidden" th:value="${user}" />
+			</form>
+		</div>
+	</div>
+</nav>
+<!-- <div><h1><center>Dashboard</center></h1></div> -->
+<div class="container">
+	<div class="dashboard">
+		<p class="welcomeuser" th:text="'Welcome '+${user}+'!!!'"></p>
+		<div class="col-lg-6 offset-lg-3">
+			<form action="/search" method="post">
+				<div class="input-group">
+					<input type="text" class="form-control" name="searchInput" placeholder="Search Bar" id="searchInput" required="required"/>
+					<input type="hidden" name="hidden" th:value="${user}" />
+					<input class="dashbtn" type="submit" value="Search" />
+				</div>
+			</form>
+		</div>
+		<div class="dashTable">
+			<table style="width:100%" border="0" class="table-respomsive-sm">
+				<tr height="50">
+					<th width="30%" height="300" style=" padding: 40px;box-shadow:0 0 7px 2px black">
+						<table style="width:100%" height="100%" border="0" class="table-respomsive-sm">
+							<tr>
+								<th>
+									<form action="/playlist" method="get">
+										<button class="btn btn-block" type="submit" value="Playlists"><i class="fa fa-list"></i> Playlists</button>
+										<input type="hidden" name="hidden" th:value="${user}" />
+									</form>
+								</th>
+							</tr>
+							<tr>
+								<th>
+									<form action="/userHistory" method="get">
+										<button class="btn mt-3 btn-block" type="submit" value="History"><i class="fa fa-history"></i> History</button>
+										<input type="hidden" name="hidden" th:value="${user}" />
+									</form>
+								</th>
+							</tr>
+							<tr>
+								<th>
+									<h2 style="color:azure">How are you today ?</h2>
+
+									<form action="/tracksForMood" method="post" class="form-inline">
+										<input type="hidden" name="username" th:value="${user}" />
+											<select name="selectMood" id="selectMood" class="custom-select mb-2 selectMood" style="width: 100%;height:45px;">
+												<th:block th:each="row : ${news['mood']}">
+													<option th:value="${row}" th:text="${row}"></option>
+												</th:block>
+											</select>
+										<button type="submit" class="btn mt-2">submit</button>
+									</form>
+								</th>
+							</tr>
+						</table>
+					</th>
+					<th height="300" class="screen">
+
+						<div id="marqueecontainer" style="width: 100%;height: 100%; background-color: rgba(128, 128, 128, 0.007);border: 0; " onMouseover="copyspeed=pausespeed"
+						 onMouseout="copyspeed=marqueespeed">
+							<div id="vmarquee" style="position: absolute; width: 100%;">
+								<div class="news">
+
+										<p class="listheader">Most liked artists<span class="badge badge-dark badge-pill ml-3 p-2">35</span></p>
+
+									<ul th:each="row : ${news['topArtist']}" class="list-group">
+										<li th:text="${row}" style="text-align : center" class="list-group-item">action</li>
+										<li class="list-group-item">action</li>
+										<li class="list-group-item">action</li>
+										<li class="list-group-item">action</li>
+									</ul>
+									<hr/>
+
+										<p class="listheader">Latest Tracks<span class="badge badge-dark badge-pill ml-3 p-2">35</span></p>
+
+									<ul th:each="row : ${news['latestTrack']}">
+										<li th:text="${row}" style="text-align : center"  class="list-group-item">action</li>
+										<li class="list-group-item">action</li>
+										<li class="list-group-item">action</li>
+										<li class="list-group-item">action</li>
+									</ul>
+									<hr/>
+
+										<p class="listheader">Latest Albums<span class="badge badge-dark badge-pill ml-3 p-2">35</span></p>
+
+									<ul th:each="row : ${news['latestAlbum']}">
+										<li th:text="${row}" style="text-align : center"  class="list-group-item">action</li>
+										<li class="list-group-item">action</li>
+										<li class="list-group-item">action</li>
+										<li class="list-group-item">action</li>
+									</ul>
+									<hr/>
+
+										<p class="listheader">Highest Rated Tracks<span class="badge badge-dark badge-pill ml-3 p-2">35</span></p>
+
+									<ul th:each="row : ${news['tracktitle']}">
+										<li th:text="${row}" style="text-align : center"  class="list-group-item"></li>
+										<li class="list-group-item">action</li>
+										<li class="list-group-item">action</li>
+										<li class="list-group-item">action</li>
+									</ul>
+									<hr/>
+
+										<p class="listheader">Most Viewed PlayList<span class="badge badge-dark badge-pill ml-3 p-2">35</span></p>
+
+									<ul th:each="row : ${news['mostHeardPlaylists']}">
+										<li th:text="${row}" style="text-align : center"  class="list-group-item">action</li>
+										<li class="list-group-item">action</li>
+										<li class="list-group-item">action</li>
+										<li class="list-group-item">action</li>
+									</ul>
+									<hr/>
+
+										<p class="listheader">Most Played PlayList<span class="badge badge-dark badge-pill ml-3 p-2">35</span></p>
+
+									<ul th:each="row : ${news['mostPlayedPlaylist']}">
+										<li th:text="${row}" style="text-align : center"  class="list-group-item">action</li>
+										<li class="list-group-item">action</li>
+										<li class="list-group-item">action</li>
+										<li class="list-group-item">action</li>
+									</ul>
+									<hr/>
+
+										<p class="listheader">Most Viewed Album<span class="badge badge-dark badge-pill ml-3 p-2">35</span></p>
+
+									<ul th:each="row : ${news['mostHeardAlbum']}">
+										<li th:text="${row}" style="text-align : center"  class="list-group-item">action</li>
+										<li class="list-group-item">action</li>
+										<li class="list-group-item">action</li>
+										<li class="list-group-item">action</li>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</th>
+				</tr>
+			</table>
+		</div>
+	</div>
+	<div class="deleteAccount" align="right">
+		<form action="/deleteAccount" method="post">
+			<button class="btn bg-danger mt-3" type="submit" value="Delete My Account"><i class="fa fa-trash"></i> Delete My Account</button>
+			<input type="hidden" name="hidden" th:value="${user}" />
+		</form>
+	</div>
+</div>
+
+<script src="js/jquery-3.3.1.min-1.js"></script>
+<script src="js/bootstrap.min.js"></script>
+
+</body>
+</html>

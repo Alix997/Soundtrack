@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+<title>Welcome Page</title>
+<link href="css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="css/fontawesome-all.css">
+<link href="css/main.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<nav class="navbar navbar-expand-md navbar-light bg-light fixed-top">
+	<div class="container">
+		<a class="navbar-brand" href="index.html#">
+			<img src="img/logo.png" alt="HTML5 Icon" style="width:100px;height:60px;">
+		</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault"
+		 aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+
+		<div class="collapse navbar-collapse" id="navbarsExampleDefault">
+			<ul class="navbar-nav mr-auto">
+
+			</ul>
+			<form class="form-inline my-2 my-lg-0 mr-3" action="/home" method="post">
+				<button class="btn" type="submit" value="Home">
+					<i class="fa fa-home"></i> Home</button>
+				<input type="hidden" id="user" name="hidden" th:value="${user}" />
+			</form>
+			<form class="form-inline my-2 my-lg-0" action="/logout" method="post">
+				<button class="btn" type="submit" value="Logout">
+					<i class="fa fa-arrow-right"></i> Logout</button>
+				<input type="hidden" name="hidden" th:value="${user}" />
+			</form>
+		</div>
+	</div>
+</nav>
+
+<div class="container mt-5 pt-5">
+	<div class="row mt-5">
+		<div class="col-lg-12">
+			<div>
+				<h1 class="text-white">
+					Search Results
+				</h1>
+			</div>
+
+			<input type="hidden" id="source" name="source" th:value="track" />
+			<div class="tabcontainer">
+				<ul id="tab">
+					<li id="tab1">Tracks</li>
+					<li id="tab2" class="inactive">Artists</li>
+					<li id="tab3" class="inactive">Albums</li>
+					<li id="tab4" class="inactive">Users</li>
+				</ul>
+				<div id="tab1-tabcontent">
+					<table style="width:100%" class="table table-bordered table-dark table-responsive-sm text-center">
+						<tr height="50">
+							<th>
+								Sr.No
+							</th>
+							<th>
+								Track Title
+							</th>
+							<th>
+								Track Duration
+							</th>
+							<th>
+								Add to PlayList
+							</th>
+							<th>
+								Rate this Track
+							</th>
+							<th>
+								play Track
+							</th>
+						</tr>
+						<tr th:each="row : ${searchData[0]}">
+							<input type="hidden" id="trackIdtest1" th:value="${row.value[0]}" />
+							<td class="tg bg" th:text="${row.key}"></td>
+							<td class="tg bg" th:text="${row.value[1]}"></td>
+							<td class="tg bg" th:text="${row.value[2]}"></td>
+							<td class="tg bg">
+								<select id="addTrack" class="addTrack custom-select" style="height:45px;">
+									<option value="blank"></option>
+									<th:block th:each="playlist : ${playListData[0]}">
+										<option th:value="${playlist.value[1]}" th:text="${playlist.value[0]}"></option>
+									</th:block>
+								</select>
+							</td>
+							<td class="tg bg">
+								<select id="rating" class="rating custom-select" style="height:45px;">
+									<option value="blank"></option>
+									<option value="1">1</option>
+									<option value="2">2</option>
+									<option value="3">3</option>
+									<option value="4">4</option>
+									<option value="5">5</option>
+								</select>
+							</td>
+							<input type="hidden" id="trackid" th:value="${row.value[0]}" />
+							<input type="hidden" id="tracktitle" th:value="${row.value[1]}" />
+							<td>
+								<button type="submit" value="Play" class="trackPlayed  btn "><i class="fa fa-play"></i></button>
+							</td>
+						</tr>
+					</table>
+				</div>
+				
+				<div id="tab2-tabcontent">
+					<table style="width:100%" class="table table-bordered table-dark table-responsive-sm text-center">
+						<tr height="50">
+							<th>
+								Sr.No
+							</th>
+							<th>
+								Artist Name
+							</th>
+							<th>
+								Artist Description
+							</th>
+							<th>
+								Like Artist
+							</th>
+						</tr>
+						<tr th:each="row : ${searchData[1]}">
+							<td class="tg bg" th:text="${row.key}"></td>
+							<td>
+								<form action="/getTracks" method="post">
+									<button class="btn" type="submit" name="artistName" th:value="${row.value[1]}">something</button>
+									<input type="hidden" name="artistId" th:value="${row.value[0]}" />
+									<input type="hidden" name="artistName" th:value="${row.value[1]}" />
+									<input type="hidden" name="type" th:value="artist" />
+									<input type="hidden" name="hidden" th:value="${user}" />
+									<input type="hidden" name="playListData" th:value="${playListData}" />
+								</form>
+							</td>
+							<td class="tg bg" th:text="${row.value[2]}"></td>
+							<td>
+								<input type="hidden" class="artistId" name="artistId" th:value="${row.value[0]}" />
+								<input type="hidden" class="likedCheck" name="likedCheck" th:value="${row.value[3]}" />
+								<button type="checkbox" id="isLiked" name="isLiked" class="isLiked btn" ><i class="fa fa-thumbs-up"></i></button>
+							</td>
+						</tr>
+					</table>
+				</div>
+				
+				<div id="tab3-tabcontent">
+					<table style="width:100%" class="table table-bordered table-dark table-responsive-sm text-center">
+						<tr height="50">
+							<th>
+								Sr.No
+							</th>
+							<!-- 	<th> -->
+							<!-- 		Album ID -->
+							<!-- 	</th> -->
+							<th>
+								Album Title
+							</th>
+							<th>
+								Album Release Date
+							</th>
+						</tr>
+						<tr th:each="row : ${searchData[2]}">
+							<td class="tg bg" th:text="${row.key}"></td>
+							<!-- 	    	<td class="tg bg" th:text="${row.value[0]}"></td>   -->
+							<td>
+								<form action="/getTracks" method="post">
+									<button class="btn" type="submit" name="albumName" th:value="${row.value[1]}">somthing</button>
+									<input type="hidden" name="albumId" th:value="${row.value[0]}" />
+									<input type="hidden" name="albumName" th:value="${row.value[1]}" />
+									<input type="hidden" name="type" th:value="album" />
+									<input type="hidden" name="hidden" th:value="${user}" />
+								</form>
+							</td>
+							<!-- 	    	<td class="tg bg" th:text="${row.value[1]}"></td>   -->
+							<td class="tg bg" th:text="${row.value[2]}"></td>
+						</tr>
+					</table>
+				</div>
+				<div id="tab4-tabcontent">
+					<table style="width:100%" class="table table-bordered table-dark table-responsive-sm text-center">
+						<tr height="50">
+							<th>
+								Sr.No
+							</th>
+							<th>
+								userName
+							</th>
+							<th>
+								Full Name
+							</th>
+							<th>
+								Follow
+							</th>
+						</tr>
+						<tr th:each="row : ${searchData[3]}">
+							<td class="tg bg" th:text="${row.key}"></td>
+							<td class="tg bg" th:text="${row.value[0]}"></td>
+							<td class="tg bg" th:text="${row.value[1]}"></td>
+							<td>
+								<input type="hidden" class="userId" name="userId" th:value="${row.value[0]}" />
+								<input type="hidden" class="followCheck" name="followCheck" th:value="${row.value[2]}" />
+								<button type="checkbox" id="isFollowed" name="isFollowed" class="isFollowed btn"><i class="fa fa-heart"></i></button>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+			<input type="hidden" id="user" name="hidden" th:value="${user}" />	
+		</div>
+	</div>
+</div>
+
+
+<script src="js/jquery-3.3.1.min-1.js"></script>
+<script src="js/bootstrap.min.js"></script>
+
+
+<script>
+	$(document).ready(function(){
+		$("#tab li").click(function(){
+			var id = $(this).attr("id");
+			$(this).removeClass("inactive").siblings().addClass("inactive");
+			$(".tabcontainer div").hide();
+			$("#" + id + "-tabcontent").fadeIn(1000);
+		});
+	});
+</script>
+
+<script inline="javascript" src="tab.js"></script>
+<script inline="javascript" src="dropdownselect.js"></script>
+<script inline="javascript" src="likeSelect.js"></script>
+<script inline="javascript" src="followSelect.js"></script>
+<script inline="javascript" src="updateplays.js"></script>
+
+</body>
+</html>
